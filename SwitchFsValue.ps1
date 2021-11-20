@@ -71,7 +71,7 @@ Read-Host -Prompt "Um fortzufahren [ENTER] druecken...";
 ########################################################
 ##
 ## Skript-Aufruf von .\EVA-FTP-Client.ps1, zum setzen des neues Wertes für linux_fs_start
-## und Roboot
+## und Reboot
 ##
 
 
