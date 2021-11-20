@@ -37,12 +37,12 @@
 ##
 ## Parameter-Definitionen
 
-Param([Parameter(Mandatory = $False, HelpMessage = 'The IP for searching the box while booting')][string]$BoxIP='192.168.178.1'
+Param([Parameter(Mandatory = $False, HelpMessage = 'The IP for searching the box while booting')][string]$BoxIP='192.168.0.111'
     )
 
 
 ## Überprüfung, ob Neztwerkkabel am LAN-Interface angeschlossen ist oder DhcpMediaSense deaktiviert wurde
-Write-Verbose -Message "INFO: Überprüfung, ob Neztwerkkabel am LAN-Interface angeschlossen ist oder DhcpMediaSense deaktiviert wurde..";
+Write-Output "INFO: Ueberpruefung, ob Neztwerkkabel am LAN-Interface angeschlossen ist oder DhcpMediaSense deaktiviert wurde..";
 if ( $(Get-NetIPv4Protocol).DhcpMediaSense )
     {
     Write-Verbose -Message "INFO: Der DHCPMediaSense ist auf den Netzwerkschittstellen aktiv. Dies kann je nach Verbindung zur FRITZ!Box zu Problemen führen. `
@@ -62,15 +62,11 @@ if ( -not $(Get-NetIPAddress -AddressFamily IPv4 -InterfaceAlias Ether*,WLAN*).I
 ## Skript-Aufruf von .\EVA-Discover.ps1
 ##
 
-Write-Output "Bitte die FRITZ!Box nun an den Strom anschließen...";
+Write-Output "Bitte die FRITZ!Box nun an den Strom anschliessen...";
 
-if (-not $(.\EVA-Discover.ps1 -maxWait 120 -requested_address $BoxIP -Verbose -Debug))
-    {
-    Write-Error -Message "Keine FRITZ!Box gefunden!" -Category DeviceError -ErrorAction Stop
-    }
+.\EVA-Discover.ps1 -maxWait 120 -requested_address $BoxIP -Verbose -Debug;
 
-Write-Verbose -message "ERFOLG: die FRITZ!Box wurde im Bootloader angehalten. `n";
-Read-Host -Prompt "Um fortzufahren [ENTER] drücken...";
+Read-Host -Prompt "Um fortzufahren [ENTER] druecken...";
 
 ########################################################
 ##
@@ -79,19 +75,10 @@ Read-Host -Prompt "Um fortzufahren [ENTER] drücken...";
 ##
 
 
-Write-Verbose -Message "INFO: Wechsel Firmware-Partition der FRITZ!Box ...";
+Write-Output "INFO: Wechsel Firmware-Partition der FRITZ!Box ...";
 
-if (-not $(.\EVA-FTP-Client.ps1 -Address $BoxIP -ScriptBlock { SwitchSystem } -Verbose -Debug))
-    {
-    Write-Error -Message "Partition konnte nicht gewechselt werden!" -Category DeviceError -ErrorAction Stop
-    }
-Read-Host -Prompt "Zum Reboot [ENTER] drücken...";
+.\EVA-FTP-Client.ps1 -Address $BoxIP -ScriptBlock { SwitchSystem } -Verbose -Debug;
 
-if (-not $(.\EVA-FTP-Client.ps1 -Address $BoxIP -ScriptBlock { RebootTheDevice } -Verbose -Debug))
-    {
-    Write-Error -Message "Reboot war nicht erfolgreich!" -Category DeviceError -ErrorAction Stop
-    }
+Read-Host -Prompt "Zum Reboot [ENTER] druecken...";
 
-# Skript beenden
-Read-Host -Prompt "Um das Skript zu beenden [ENTER] drücken...";
-Exit 0;
+.\EVA-FTP-Client.ps1 -Address $BoxIP -ScriptBlock { RebootTheDevice } -Verbose -Debug;
