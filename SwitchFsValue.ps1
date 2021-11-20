@@ -3,7 +3,7 @@
     Wrapper-Skript für PeterPawns EVA-Tools PowerShell-Skripte
 
 .DESCRIPTION
-    PowerShell-Skript zum switchen des Wertes linux_fs_start der die Starpartition der Fritzbox festlegt. Hiermit ist es möglich nachdem ein neues Image geflashed wurde auf das alta zurück zu wechseln.
+    PowerShell-Skript zum switchen des Wertes linux_fs_start der die Starpartition der Fritzbox festlegt. Hiermit ist es möglich nachdem ein neues Image geflashed wurde, auf das alte Image zurück zu wechseln.
     Dieses Skript benötigt die EVA-Tools aus PeterPawns GitHup-Repository.
 
     Wichtig: vor dem Ausführen des Skripts sollte sichergestellt sein, dass entweder am LAN-Interface
@@ -66,16 +66,13 @@ Write-Output "Bitte die FRITZ!Box nun an den Strom anschliessen...";
 
 .\EVA-Discover.ps1 -maxWait 120 -requested_address $BoxIP -Verbose -Debug;
 
-Read-Host -Prompt "Um fortzufahren [ENTER] druecken...";
+Read-Host -Prompt "Um die Firmware-Partition der FRITZ!Box zu wechseln, [ENTER] druecken...";
 
 ########################################################
 ##
 ## Skript-Aufruf von .\EVA-FTP-Client.ps1, zum setzen des neues Wertes für linux_fs_start
 ## und Reboot
 ##
-
-
-Write-Output "INFO: Wechsel Firmware-Partition der FRITZ!Box ...";
 
 .\EVA-FTP-Client.ps1 -Address $BoxIP -ScriptBlock { SwitchSystem } -Verbose -Debug;
 
