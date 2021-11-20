@@ -82,3 +82,5 @@ Write-Output "INFO: Wechsel Firmware-Partition der FRITZ!Box ...";
 Read-Host -Prompt "Zum Reboot [ENTER] druecken...";
 
 .\EVA-FTP-Client.ps1 -Address $BoxIP -ScriptBlock { RebootTheDevice } -Verbose -Debug;
+
+Read-Host -Prompt "Zum Schliessen der Session [ENTER] druecken...";
